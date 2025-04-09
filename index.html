@@ -46,10 +46,9 @@
                 const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
                 const randomN = Math.floor(Math.random() * animalsChoices.length);
                 const newAn = animalsChoices[randomN]
-                setAnimals([...animals, newAn])
+                setAnimals((curr) => [...curr, newAn])
                 console.log(animals)
             }
-
 
             return (
                 <>
