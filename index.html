@@ -11,14 +11,49 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <script type="text/babel">
+    <!-- <script type="text/babel">
         const { useState } = React
         function AnimalComponent() {
 
             const animals = ["pesce", "mucca", "criceto", "gallina"]
             return (
                 <>
-                    <button>Aggiungi Animale</button>
+                    <details>
+                        <summary>Animali</summary>
+                        <ul>
+                            {animals.map((animal, index) => {
+                                return <li key={index}>{animal}</li>
+                            })}
+                        </ul>
+                    </details>
+                </>
+            )
+        };
+        const { createRoot } = ReactDOM
+        const listaAnimali = document.querySelector(".lista-animali")
+        const root = createRoot(listaAnimali)
+        root.render(<AnimalComponent />)
+    </script> -->
+
+    <script type="text/babel">
+        const { useState } = React
+
+        function AnimalComponent() {
+
+            const [animals, setAnimals] = useState([])
+
+            function newAnimal() {
+                const animalsChoices = ["Cane", "Gatto", "Pappagallo", "Cavallo", "Panda"];
+                const randomN = Math.floor(Math.random() * animalsChoices.length);
+                const newAn = animalsChoices[randomN]
+                setAnimals([...animals, newAn])
+                console.log(animals)
+            }
+
+
+            return (
+                <>
+                    <button onClick={newAnimal}>Aggiungi Animale</button>
                     <details>
                         <summary>Animali</summary>
                         <ul>
@@ -35,6 +70,7 @@
         const root = createRoot(listaAnimali)
         root.render(<AnimalComponent />)
     </script>
+
 </head>
 
 <body>
