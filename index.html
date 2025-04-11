@@ -11,7 +11,9 @@
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <!-- <script type="text/babel">
+    <!--
+    MILESTONE 1 
+    <script type="text/babel">
         const { useState } = React
         function AnimalComponent() {
 
@@ -33,8 +35,9 @@
         const listaAnimali = document.querySelector(".lista-animali")
         const root = createRoot(listaAnimali)
         root.render(<AnimalComponent />)
-    </script> -->
+    </script> 
 
+    MILESTONE 2
     <script type="text/babel">
         const { useState } = React
 
@@ -68,6 +71,97 @@
         const listaAnimali = document.querySelector(".lista-animali")
         const root = createRoot(listaAnimali)
         root.render(<AnimalComponent />)
+    </script>-->
+
+    <script type="text/babel">
+
+        const { useState } = React
+
+        function Modal({
+            title,
+            content,
+            show = false,
+            onClose = () => { },
+            onConfirm = () => { }
+        }) {
+            return show && ReactDOM.createPortal(
+                <div className="modal-container">
+                    <div className="modal">
+                        <h2>{title}</h2>
+                        <p>{content}</p>
+                        <form action="submit">
+                            <button onClick={onClose}>Annulla</button>
+                            <button type="submit" onClick={onConfirm}>Conferma</button>
+                        </form>
+                    </div>
+                </div>,
+                document.body
+            )
+        }
+
+
+        const animalName = ""
+        function AnimalsComponent() {
+
+            const [animals, setAnimals] = useState([])
+            const [animalInput, setAnimalInput] = useState('');
+            const [show, setShow] = useState(false)
+
+            const handleChange = (e) => {
+                const { name, value } = e.target;
+                setAnimalInput(e.target.value)
+                //console.log(e.target.value)
+            }
+
+            const handleSubmit = (event) => {
+                event.preventDefault()
+                setAnimals((curr) => [...curr, animalInput])
+                setAnimalInput('');
+                setShow(false);
+                console.log(
+                    "   | animals: " + animals + " |   ",
+                    "   | animalInput: " + animalInput + " |   ",
+                    "   | animalName: " + animalName + " |   "
+                )
+            };
+
+            return (
+                <div>
+                    <h1>modale</h1>
+                    <button onClick={() => setShow(true)}>Aggiungi Animale</button>
+                    <details>
+                        <summary>Animali</summary>
+                        <ul>
+                            {animals.map((animal, index) => {
+                                return <li key={index}>{animal}</li>
+                            })}
+                        </ul>
+                        <Modal
+                            title="scrivi il nome di un animale"
+                            content={
+                                <input
+                                    type="text"
+                                    placeholder="gatto"
+                                    value={animalInput}
+                                    onChange={handleChange}
+                                />
+                            }
+                            show={show}
+                            onClose={() => useState(false)}
+                            onConfirm={handleSubmit}
+                        />
+
+                    </details>
+                </div>
+            )
+
+        };
+
+        const { createRoot } = ReactDOM
+        const listaAnimali = document.querySelector(".lista-animali")
+        const root = createRoot(listaAnimali)
+        root.render(<AnimalsComponent />)
+
     </script>
 
 </head>
