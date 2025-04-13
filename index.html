@@ -173,14 +173,38 @@
         async function getData(animal) {
             const URL = `https://boolean-spec-frontend.vercel.app/freetestapi/animals?search=${animal}`
             const datas = await fetch(URL)
-            const useData = datas.json()
-            console.log(useData)
+            const useData = await datas.json()
+            //console.log(useData)
             return useData
         }
 
 
 
-        function Modal({
+        function AnimalCardModal({
+            title,
+            image,
+            content,
+            show = false,
+            onClose = () => { },
+            onConfirm = () => { }
+        }) {
+            return show && ReactDOM.createPortal(
+                <div className="modal-container">
+                    <div className="modal">
+                        <h2>{title}</h2>
+                        <img src={image} alt="" />
+                        <p>{content}</p>
+                        <form action="submit">
+                            <button onClick={onClose}>Annulla</button>
+                            <button type="submit" onClick={onConfirm}>Conferma</button>
+                        </form>
+                    </div>
+                </div>,
+                document.body
+            )
+        }
+
+        function InputModal({
             title,
             content,
             show = false,
@@ -203,50 +227,51 @@
         }
 
 
-        const animalObject = {
-            name: "",
-            description: "",
-            image: ""
-        }
-        function AnimalsComponent() {
-            const [animals, setAnimals] = useState([])
-            getData("lion").then((obj) => console.log(obj))
 
+        function AnimalsComponent() {
+            const [animals, setAnimals] = useState([]);
+            const [show, setShow] = useState(false);
             const [animalInput, setAnimalInput] = useState('');
-            const [show, setShow] = useState(false)
 
             const handleChange = (e) => {
-                const { name, value } = e.target;
-                setAnimalInput(e.target.value)
-                //console.log(e.target.value)
-            }
-
-            const handleSubmit = (event) => {
-                event.preventDefault()
-                setAnimals((curr) => [...curr, animalInput])
-                setAnimalInput('');
-                setShow(false);
-                console.log(
-                    "   | animals: " + animals + " |   ",
-                    "   | animalInput: " + animalInput + " |   ",
-                    "   | animalName: " + animalName + " |   "
-                )
+                setAnimalInput(e.target.value);
             };
 
+            const handleSubmit = (event) => {
+                event.preventDefault();
+                if (animalInput.trim()) {
+                    getData(animalInput).then((obj) => {
+                        const datas = [...obj];
+                        const newAnimal = {
+                            name: datas[0]?.name || animalInput,
+                            description: datas[0]?.description || "Descrizione non disponibile",
+                            image: datas[0]?.image || "https://via.placeholder.com/150",
+                        };
+                        setAnimals((curr) => [...curr, newAnimal]);
+                        console.log("Added animal:", newAnimal);
+                        setAnimalInput('');
+                        setShow(false);
+                    });
+                }
+            };
 
             return (
                 <div>
-                    <h1>modale</h1>
+                    <h1>Modale</h1>
                     <button onClick={() => setShow(true)}>Aggiungi Animale</button>
                     <details>
                         <summary>Animali</summary>
                         <ul>
-                            {animals.map((animal, index) => {
-                                return <li key={index}>{animal}</li>
-                            })}
+                            {animals.map((animal, index) => (
+                                <li key={index}>
+                                    {animal.name}
+                                </li>
+                            ))}
                         </ul>
-                        <Modal
-                            title="scrivi il nome di un animale"
+                    </details>
+                    {show && (
+                        <InputModal
+                            title="Scrivi il nome di un animale"
                             content={
                                 <input
                                     type="text"
@@ -259,11 +284,24 @@
                             onClose={() => setShow(false)}
                             onConfirm={handleSubmit}
                         />
-
-                    </details>
+                    )}
+                    <div className="animal-cards">
+                        {animals.map((animal, index) => (
+                            <AnimalCardModal
+                                key={index}
+                                title={animal.name}
+                                image={animal.image}
+                                content={animal.description}
+                                show={true} // Always show the card
+                                onClose={() => {
+                                    // Optional: Remove the animal from the list if you want to close the card
+                                    setAnimals((curr) => curr.filter((_, i) => i !== index));
+                                }}
+                            />
+                        ))}
+                    </div>
                 </div>
-            )
-
+            );
         };
 
         const { createRoot } = ReactDOM
@@ -283,7 +321,9 @@
         <figure>
             <img src="https://picsum.photos/400/300" alt="Immagine Casuale">
         </figure>
-        <div class="lista-animali"></div>
+        <div class="lista-animali">
+
+        </div>
 
     </main>
     <footer>
