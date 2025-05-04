@@ -164,8 +164,9 @@
         const root = createRoot(listaAnimali)
         root.render(<AnimalsComponent />)
 
-    </script>-->
+    </script>
 
+    MILESSTONE 4-->
     <script type="text/babel">
 
         const { useState, useEffect } = React
@@ -209,21 +210,27 @@
             content,
             show = false,
             onClose = () => { },
-            onConfirm = () => { }
+            onConfirm = () => { },
         }) {
-            return show && ReactDOM.createPortal(
-                <div className="modal-container">
-                    <div className="modal">
-                        <h2>{title}</h2>
-                        <p>{content}</p>
-                        <form action="submit">
-                            <button onClick={onClose}>Annulla</button>
-                            <button type="submit" onClick={onConfirm}>Conferma</button>
-                        </form>
-                    </div>
-                </div>,
-                document.body
-            )
+            return (
+                show &&
+                ReactDOM.createPortal(
+                    <>
+                        <div className="modal-overlay" onClick={onClose}></div>
+                        <div className="modal-container">
+                            <div className="modal">
+                                <h2>{title}</h2>
+                                <p>{content}</p>
+                                <form action="submit" className="d-flex">
+                                    <button type="submit" onClick={onConfirm}>Conferma</button>
+                                    <button onClick={onClose}>Annulla</button>
+                                </form>
+                            </div>
+                        </div>
+                    </>,
+                    document.body
+                )
+            );
         }
 
 
@@ -257,7 +264,7 @@
 
             return (
                 <div>
-                    <h1>Modale</h1>
+
                     <button onClick={() => setShow(true)}>Aggiungi Animale</button>
                     <details>
                         <summary>Animali</summary>
@@ -268,6 +275,7 @@
                                 </li>
                             ))}
                         </ul>
+
                     </details>
                     {show && (
                         <InputModal
